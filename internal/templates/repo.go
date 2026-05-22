@@ -8,6 +8,7 @@ import (
 
 	"ecli/internal/config"
 	"ecli/internal/paths"
+	"path/filepath"
 )
 
 func EnsureCloned(cfg config.Config) error {
@@ -17,22 +18,51 @@ func EnsureCloned(cfg config.Config) error {
 		return nil
 	}
 
-	if _, err := os.Stat(paths.TemplatesDir()); err == nil {
-		return nil
+	gitDir := filepath.Join(paths.TemplatesDir(), ".git")
+
+	updated := false
+
+	if _, err := os.Stat(gitDir); os.IsNotExist(err) {
+
+		fmt.Println("📦 Cloning templates repo...")
+
+		if err := os.RemoveAll(paths.TemplatesDir()); err != nil {
+			return err
+		}
+
+		if err := os.MkdirAll(paths.CacheDir(), 0755); err != nil {
+			return err
+		}
+
+		_, err := git.PlainClone(
+			paths.TemplatesDir(),
+			false,
+			&git.CloneOptions{
+				URL: cfg.TemplatesRepo,
+			},
+		)
+
+		if err != nil {
+			return fmt.Errorf("failed to clone templates repo: %w", err)
+		}
+
+		updated = true
 	}
 
-	fmt.Println("📦 Cloning templates repo...")
+	if cfg.AutoUpdateTemplates && ShouldUpdate(cfg.UpdateIntervalHours) {
 
-	os.MkdirAll(paths.CacheDir(), 0755)
+		fmt.Println("🔄 Updating templates...")
 
-	_, err := git.PlainClone(paths.TemplatesDir(), false, &git.CloneOptions{
-		URL: cfg.TemplatesRepo,
-	})
+		if err := UpdateRepo(); err != nil {
+			return err
+		}
 
-	if err != nil {
-		return fmt.Errorf("failed to clone templates repo: %w", err)
+		updated = true
+	}
+
+	if updated {
+		return MarkUpdated()
 	}
 
 	return nil
 }
-

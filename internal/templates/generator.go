@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"ecli/internal/config"
+	"ecli/internal/ui"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 func CopyTemplate(cfg config.Config, templatePath, projectName string) error {
@@ -17,7 +19,23 @@ func CopyTemplate(cfg config.Config, templatePath, projectName string) error {
 	dst := filepath.Join(".", projectName)
 
 	if _, err := os.Stat(dst); err == nil {
-		return fmt.Errorf("directory already exists: %s", projectName)
+
+		m := ui.NewConfirm("Directory already exists. Overwrite?")
+		p := tea.NewProgram(m)
+
+		model, _ := p.Run()
+
+		c := model.(*ui.Confirm)
+
+		if !c.Result {
+			fmt.Println("❌ cancelled")
+			return nil
+		}
+
+		fmt.Println("🧹 removing existing directory...")
+		if err := os.RemoveAll(dst); err != nil {
+			return err
+		}
 	}
 
 	fmt.Println("📦 Generating project...")
@@ -61,4 +79,3 @@ func CopyTemplate(cfg config.Config, templatePath, projectName string) error {
 		)
 	})
 }
-

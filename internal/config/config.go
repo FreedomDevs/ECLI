@@ -8,9 +8,11 @@ import (
 )
 
 type Config struct {
-	TemplatesRepo      string `json:"templates_repo"`
-	Debug              bool   `json:"debug"`
-	LocalTemplatesPath string `json:"local_templates_path"`
+	TemplatesRepo       string `json:"templates_repo"`
+	Debug               bool   `json:"debug"`
+	LocalTemplatesPath  string `json:"local_templates_path"`
+	AutoUpdateTemplates bool   `json:"auto_update_templates"`
+	UpdateIntervalHours int    `json:"update_interval_hours"`
 }
 
 func Exists() bool {
@@ -23,9 +25,11 @@ func Default() Config {
 		TemplatesRepo:      "https://github.com/FreedomDevs/templates",
 		Debug:              false,
 		LocalTemplatesPath: "",
+
+		AutoUpdateTemplates: true,
+		UpdateIntervalHours: 24,
 	}
 }
-
 func Load() (*Config, error) {
 	b, err := os.ReadFile(paths.ConfigFile())
 	if err != nil {
