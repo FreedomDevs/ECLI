@@ -16,14 +16,27 @@ func CopyTemplate(cfg config.Config, templatePath, projectName string) error {
 	src := filepath.Join(base, templatePath, "template")
 	dst := filepath.Join(".", projectName)
 
+	if _, err := os.Stat(dst); err == nil {
+		return fmt.Errorf("directory already exists: %s", projectName)
+	}
+
 	fmt.Println("📦 Generating project...")
 
 	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
+
 		if err != nil {
 			return err
 		}
 
-		rel := strings.TrimPrefix(path, src)
+		if info.Name() == ".git" {
+			return filepath.SkipDir
+		}
+
+		rel, err := filepath.Rel(src, path)
+		if err != nil {
+			return err
+		}
+
 		target := filepath.Join(dst, rel)
 
 		if info.IsDir() {
@@ -35,8 +48,17 @@ func CopyTemplate(cfg config.Config, templatePath, projectName string) error {
 			return err
 		}
 
-		content := strings.ReplaceAll(string(data), "{{PROJECT_NAME}}", projectName)
+		content := strings.ReplaceAll(
+			string(data),
+			"{{PROJECT_NAME}}",
+			projectName,
+		)
 
-		return os.WriteFile(target, []byte(content), 0644)
+		return os.WriteFile(
+			target,
+			[]byte(content),
+			info.Mode(),
+		)
 	})
 }
+

@@ -10,6 +10,7 @@ import (
 	"ecli/internal/config"
 	"ecli/internal/templates"
 	"ecli/internal/ui"
+	"sort"
 )
 
 func runGenerate(cfg *config.Config, reg templates.Registry, projectName string, selectedName string, nameToKey map[string]string) {
@@ -37,6 +38,11 @@ var newCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		if err := templates.EnsureCloned(*cfg); err != nil {
+			fmt.Println("❌ failed to prepare templates:", err)
+			os.Exit(1)
+		}
+
 		reg, err := templates.LoadRegistry(*cfg)
 		if err != nil {
 			fmt.Println("❌ failed to load registry:", err)
@@ -51,6 +57,8 @@ var newCmd = &cobra.Command{
 			nameToKey[v.Name] = k
 		}
 
+		sort.Strings(items)
+
 		var projectName string
 		var selectedName string
 
@@ -61,7 +69,7 @@ var newCmd = &cobra.Command{
 			p := tea.NewProgram(w)
 			m, _ := p.Run()
 
-			model := m.(ui.Wizard)
+			model := m.(*ui.Wizard)
 
 			projectName = model.ProjectName
 			selectedName = model.Choice
@@ -75,7 +83,7 @@ var newCmd = &cobra.Command{
 		p := tea.NewProgram(ui.NewSelector(items))
 		m, _ := p.Run()
 
-		model := m.(ui.Model)
+		model := m.(*ui.Model)
 
 		selectedName = model.Choice
 

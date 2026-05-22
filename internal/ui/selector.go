@@ -12,17 +12,17 @@ type Model struct {
 	Choice string
 }
 
-func NewSelector(items []string) Model {
-	return Model{
+func NewSelector(items []string) *Model {
+	return &Model{
 		items: items,
 	}
 }
 
-func (m Model) Init() tea.Cmd {
+func (m *Model) Init() tea.Cmd {
 	return nil
 }
 
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 
@@ -51,7 +51,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m Model) View() string {
+func (m *Model) View() string {
 
 	s := TitleStyle.Render("Choose template") + "\n\n"
 
@@ -70,4 +70,3 @@ func (m Model) View() string {
 
 	return s + "\n↑/↓ move • enter select • esc quit"
 }
-

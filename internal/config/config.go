@@ -20,7 +20,7 @@ func Exists() bool {
 
 func Default() Config {
 	return Config{
-		TemplatesRepo:      "https://github.com/FredoomDevs/templates",
+		TemplatesRepo:      "https://github.com/FreedomDevs/templates",
 		Debug:              false,
 		LocalTemplatesPath: "",
 	}

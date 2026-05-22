@@ -20,24 +20,24 @@ type Wizard struct {
 	Choice      string
 }
 
-func NewWizard(items []string) Wizard {
+func NewWizard(items []string) *Wizard {
 	ti := textinput.New()
 	ti.Placeholder = "project-name"
 	ti.Focus()
 	ti.CharLimit = 64
 
-	return Wizard{
+	return &Wizard{
 		step:      1,
 		textInput: ti,
 		items:     items,
 	}
 }
 
-func (m Wizard) Init() tea.Cmd {
+func (m *Wizard) Init() tea.Cmd {
 	return textinput.Blink
 }
 
-func (m Wizard) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m *Wizard) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
 	switch m.step {
@@ -92,7 +92,7 @@ func (m Wizard) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m Wizard) View() string {
+func (m *Wizard) View() string {
 
 	if m.step == 1 {
 
