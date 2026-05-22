@@ -8,6 +8,17 @@ pkgs.buildGoModule {
 
   vendorHash = "sha256-T8mcyv19XWAE3egX+5J//2gmKm7u39F07o8Qymoo6Rg=";
 
+  ldflags = [
+    "-X main.ShellPath=${pkgs.dash}/bin/dash"
+    "-X main.ScriptPath=\${out}/share/ecli/script.sh"
+  ];
+
+  postInstall = ''
+    mkdir -p $out/share/ecli
+    cp script.sh $out/share/ecli/script.sh
+    chmod +x $out/share/ecli/script.sh
+  '';
+
   meta = with pkgs.lib; {
     description = "Хуйня для генерации шаблонных репо, и другой хуйни для ElysiumSMP";
     homepage = "https://github.com/FreedomDevs/ECLI";

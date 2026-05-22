@@ -6,6 +6,11 @@ import (
 	"os"
 )
 
+var (
+	ShellPath  = "sh"
+	ScriptPath = "./create_svc_network.sh"
+)
+
 var rootCmd = &cobra.Command{
 	Use: "ecli",
 }
