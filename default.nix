@@ -10,13 +10,13 @@ pkgs.buildGoModule {
 
   ldflags = [
     "-X main.ShellPath=${pkgs.dash}/bin/dash"
-    "-X main.ScriptPath=\${out}/share/ecli/script.sh"
+    "-X main.ScriptPath=\${out}/share/ecli/create_svc_network.sh"
   ];
 
   postInstall = ''
     mkdir -p $out/share/ecli
-    cp script.sh $out/share/ecli/script.sh
-    chmod +x $out/share/ecli/script.sh
+    cp create_svc_network.sh $out/share/ecli/create_svc_network.sh
+    chmod +x $out/share/ecli/create_svc_network.sh
   '';
 
   meta = with pkgs.lib; {
