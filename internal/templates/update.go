@@ -52,6 +52,7 @@ func UpdateRepo() error {
 
 	err = worktree.Pull(&git.PullOptions{
 		RemoteName: "origin",
+		Force:      true,
 	})
 
 	if err == git.NoErrAlreadyUpToDate {
