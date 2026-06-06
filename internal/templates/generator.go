@@ -71,6 +71,11 @@ func CopyTemplate(cfg config.Config, templatePath, projectName string) error {
 			"{{PROJECT_NAME}}",
 			projectName,
 		)
+		content = strings.ReplaceAll(
+			content,
+			"{{PROJECT_NAME_LOWERCASE}}",
+			strings.ToLower(projectName),
+		)
 
 		return os.WriteFile(
 			target,

@@ -13,10 +13,21 @@ pkgs.buildGoModule {
     "-X main.ScriptPath=\${out}/share/ecli/create_svc_network.sh"
   ];
 
+  nativeBuildInputs = [ pkgs.installShellFiles ];
+
   postInstall = ''
     mkdir -p $out/share/ecli
     cp create_svc_network.sh $out/share/ecli/create_svc_network.sh
     chmod +x $out/share/ecli/create_svc_network.sh
+
+    $out/bin/ecli completion bash > ecli.bash
+    installShellCompletion --bash ecli.bash
+
+    $out/bin/ecli completion zsh > _ecli
+    installShellCompletion --zsh _ecli
+
+    $out/bin/ecli completion fish > ecli.fish
+    installShellCompletion --fish ecli.fish
   '';
 
   meta = with pkgs.lib; {
