@@ -1,10 +1,14 @@
-{ pkgs ? import <nixpkgs> {} }:
-
+{
+  stdenv,
+  pkgs,
+}:
 pkgs.buildGoModule {
   pname = "ecli";
   version = "1.0";
 
   src = ./.;
+
+  GOAMD64 = stdenv.hostPlatform.goAMD64 or "v1";
 
   vendorHash = "sha256-T8mcyv19XWAE3egX+5J//2gmKm7u39F07o8Qymoo6Rg=";
 
@@ -13,7 +17,7 @@ pkgs.buildGoModule {
     "-X main.ScriptPath=\${out}/share/ecli/create_svc_network.sh"
   ];
 
-  nativeBuildInputs = [ pkgs.installShellFiles ];
+  nativeBuildInputs = [pkgs.installShellFiles];
 
   postInstall = ''
     mkdir -p $out/share/ecli
@@ -34,6 +38,6 @@ pkgs.buildGoModule {
     description = "Хуйня для генерации шаблонных репо, и другой хуйни для ElysiumSMP";
     homepage = "https://github.com/FreedomDevs/ECLI";
     license = licenses.mit;
-    maintainers = [ foksik mikinol ];
+    maintainers = [foksik mikinol];
   };
 }
