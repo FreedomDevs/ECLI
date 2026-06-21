@@ -13,8 +13,8 @@ pkgs.buildGoModule {
   vendorHash = "sha256-T8mcyv19XWAE3egX+5J//2gmKm7u39F07o8Qymoo6Rg=";
 
   ldflags = [
-    "-X main.ShellPath=${pkgs.dash}/bin/dash"
-    "-X main.ScriptPath=\${out}/share/ecli/create_svc_network.sh"
+    "-X ecli/cmd.ShellPath=${pkgs.dash}/bin/dash"
+    "-X ecli/cmd.ScriptPath=${placeholder "out"}/share/ecli/create_svc_network.sh"
   ];
 
   nativeBuildInputs = [pkgs.installShellFiles];
