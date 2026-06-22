@@ -10,7 +10,7 @@ pkgs.buildGoModule {
 
   GOAMD64 = stdenv.hostPlatform.goAMD64 or "v1";
 
-  vendorHash = "sha256-T8mcyv19XWAE3egX+5J//2gmKm7u39F07o8Qymoo6Rg=";
+  vendorHash = "sha256-lF8tvycSFhvH4cqBiXzZAgdtxmA5TUgdY+yNJLUeRMA=";
 
   nativeBuildInputs = [pkgs.installShellFiles];
 
