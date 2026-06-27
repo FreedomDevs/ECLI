@@ -20,7 +20,7 @@ var deployCmd = &cobra.Command{
 
 		fmt.Printf("=== building image: %s ===\n", tag)
 
-		buildCmd := exec.Command("docker", "build", "--network=host", ".", "-t", tag)
+		buildCmd := exec.Command("docker", "build", ".", "-t", tag)
 		buildCmd.Stdout = os.Stdout
 		buildCmd.Stderr = os.Stderr
 
@@ -49,5 +49,5 @@ var deployCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(dockerCmd)
+	rootCmd.AddCommand(deployCmd)
 }
