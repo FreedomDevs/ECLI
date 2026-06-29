@@ -16,7 +16,7 @@ var deployCmd = &cobra.Command{
 	SilenceErrors: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		svcName := args[0]
-		tag := fmt.Sprintf("%s:latest", svcName)
+		tag := fmt.Sprintf("elysium-registry.mcbeeland.ru/%s:latest", svcName)
 
 		fmt.Printf("=== building image: %s ===\n", tag)
 
@@ -30,14 +30,7 @@ var deployCmd = &cobra.Command{
 
 		fmt.Printf("=== deploying %s to remote server ===\n", tag)
 
-		pipelineStr := fmt.Sprintf(
-			"docker save %s | zstd -3 - | pv -b | ssh mikinol-serv \"zstd -d - | docker load && sudo /usr/local/bin/deploy/deploy\"",
-			tag,
-		)
-
-		deployCmd := exec.Command("bash", "-c", pipelineStr)
-		deployCmd.Stdout = os.Stdout
-		deployCmd.Stderr = os.Stderr
+		deployCmd := exec.Command("docker", "push", tag)
 
 		if err := deployCmd.Run(); err != nil {
 			return fmt.Errorf("failed to deploy image: %w", err)
